@@ -6,97 +6,68 @@ import {
 import MetricCard from "../components/MetricCard";
 import AnomalyAlert from "../components/AnomalyAlert";
 import { Activity, AlertCircle, Clock, Cpu, Server } from "lucide-react";
-
-const metrics = [
-  {
-    title: "Total API Requests",
-    value: "124,532",
-    change: "+12%",
-    trend: "up" as const,
-    icon: <Server size={20} />,
-  },
-  {
-    title: "Error Rate",
-    value: "1.2%",
-    change: "-0.4%",
-    trend: "down" as const,
-    icon: <AlertCircle size={20} />,
-  },
-  {
-    title: "Anomalies Detected",
-    value: "18",
-    change: "+3",
-    trend: "up" as const,
-    icon: <Activity size={20} />,
-  },
-  {
-    title: "Avg Response Time",
-    value: "142ms",
-    change: "-8ms",
-    trend: "down" as const,
-    icon: <Clock size={20} />,
-  },
-];
-
-const alerts = [
-  {
-    severity: "high" as const,
-    apiName: "Payment Processing API",
-    message: "Response time > 2s for 15 minutes",
-    time: "2 minutes ago",
-    rootCause: "Database latency",
-  },
-  {
-    severity: "medium" as const,
-    apiName: "User Authentication API",
-    message: "Error rate spike (12%)",
-    time: "15 minutes ago",
-    rootCause: "High traffic",
-  },
-  {
-    severity: "low" as const,
-    apiName: "Transaction History API",
-    message: "Latency increase detected",
-    time: "1 hour ago",
-    rootCause: "Cache miss",
-  },
-];
-
-const heatmapData = [
-  [10, 15, 20, 25, 30, 35, 40],
-  [15, 20, 25, 30, 35, 40, 45],
-  [20, 25, 30, 35, 40, 45, 50],
-  [25, 30, 35, 40, 45, 50, 55],
-  [30, 35, 40, 45, 50, 55, 60],
-];
-
-const heatmapXLabels = [
-  "00:00",
-  "04:00",
-  "08:00",
-  "12:00",
-  "16:00",
-  "20:00",
-  "24:00",
-];
-const heatmapYLabels = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+import { useFakeData } from "../hooks/useFakeData";
 
 export default function Dashboard() {
+  const { metrics, alerts } = useFakeData();
+
+  const metricCards = [
+    {
+      title: "Total API Requests",
+      value: metrics.totalRequests,
+      change: `+${Math.floor(metrics.totalRequests * 0.0005)}%`,
+      trend: "up" as const,
+      icon: <Server size={20} />,
+    },
+    {
+      title: "Error Rate",
+      value: metrics.errorRate,
+      change:
+        metrics.errorTrend === "up"
+          ? `+${(metrics.errorRate * 0.1).toFixed(1)}%`
+          : `-${(metrics.errorRate * 0.05).toFixed(1)}%`,
+      trend: metrics.errorTrend,
+      icon: <AlertCircle size={20} />,
+    },
+    {
+      title: "Anomalies Detected",
+      value: metrics.anomalies,
+      change: `+${Math.floor(metrics.anomalies * 0.2)}`,
+      trend: "up" as const,
+      icon: <Activity size={20} />,
+    },
+    {
+      title: "Avg Response Time",
+      value: metrics.responseTime,
+      change:
+        metrics.responseTrend === "up"
+          ? `+${Math.floor(metrics.responseTime * 0.03)}ms`
+          : `-${Math.floor(metrics.responseTime * 0.02)}ms`,
+      trend: metrics.responseTrend,
+      icon: <Clock size={20} />,
+    },
+  ];
+
   return (
     <div className="bg-gray-900 text-gray-100 min-h-full p-4 md:p-6">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Metrics Section */}
         <div className="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {metrics.map((metric, i) => (
-            <motion.div
-              key={metric.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <MetricCard {...metric} />
-            </motion.div>
-          ))}
+          {metricCards.map(
+            (
+              metric,
+              i // Changed from metrics to metricCards
+            ) => (
+              <motion.div
+                key={metric.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <MetricCard {...metric} />
+              </motion.div>
+            )
+          )}
         </div>
 
         {/* Main Charts */}
