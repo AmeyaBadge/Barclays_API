@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.heatmap-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.heatmap-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.heatmap-container th {
+  color: #9CA3AF;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.heatmap-container td {
+  min-width: 30px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.heatmap-container td:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
